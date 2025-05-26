@@ -13,9 +13,6 @@
           fontFamily: {
             sans: ['Inter', 'sans-serif'],
           },
-          // These are not strictly necessary with Tailwind JIT (included in CDN)
-          // as arbitrary values like min-w-[150px] work out-of-the-box.
-          // However, they don't hurt.
           minWidth: {
             '[150px]': '150px',
           },
@@ -27,20 +24,16 @@
     }
   </script>
   <style>
-    /* Custom styles for better RTL handling with Tailwind if needed, or minor tweaks */
     body {
       font-family: 'Inter', sans-serif;
     }
-    /* Ensure Likert numbers are LTR even in RTL page */
     .likert-options-ltr {
         direction: ltr;
     }
-    /* Custom focus style for better visibility */
     input:focus, select:focus {
         outline: 2px solid #2563eb; /* Tailwind's blue-600 */
         outline-offset: 1px;
     }
-    /* Styling for the custom validation message for inputs and radio buttons */
     .input-error-message, .radio-error-message {
         color: #ef4444; /* Tailwind's red-500 */
         font-size: 0.75rem; /* text-xs */
@@ -49,16 +42,16 @@
     .mmse-drawing {
         width: 150px;
         height: 100px;
-        margin-right: auto; /* RTL: margin on the right for auto (pushes to visual right / page left) */
-        margin-left: 0;     /* RTL: reset left margin */
-        border: 1px solid #ccc; /* Tailwind gray-300 equivalent */
-        padding: 0.25rem; /* p-1 */
-        border-radius: 0.375rem; /* rounded-md */
+        margin-right: auto; 
+        margin-left: 0;     
+        border: 1px solid #ccc; 
+        padding: 0.25rem; 
+        border-radius: 0.375rem; 
     }
-    @media (min-width: 640px) { /* sm breakpoint */
+    @media (min-width: 640px) { 
         .mmse-drawing {
-             margin-right: auto; /* Center on larger screens */
-             margin-left: auto;  /* Center on larger screens */
+             margin-right: auto; 
+             margin-left: auto;  
         }
     }
   </style>
@@ -69,7 +62,10 @@
     <div class="section hidden mb-10 p-5 bg-white rounded-lg shadow-lg" id="section-1">
       <h2 class="text-2xl font-semibold text-sky-700 mb-6">معلومات عامة / General Information</h2>
       
-      <label for="age" class="block text-gray-700 mb-1">العمر / Age:</label>
+      <label for="patientId" class="block text-gray-700 mb-1">معرف المريض / Patient Identifier:</label>
+      <input type="text" id="patientId" name="patientId" required class="block w-full sm:w-auto p-2.5 mt-1 rounded-md border border-gray-300 min-w-[150px] max-w-[400px] focus:border-blue-500 focus:ring-blue-500" placeholder="Enter Patient ID">
+
+      <label for="age" class="block text-gray-700 mt-4 mb-1">العمر / Age:</label>
       <select id="age" name="age" required class="block w-full sm:w-auto p-2.5 mt-1 rounded-md border border-gray-300 min-w-[150px] max-w-[400px] focus:border-blue-500 focus:ring-blue-500">
         <option value="">اختر / Select</option>
         <option value="65-75">٦٥-٧٥ / 65-75</option>
@@ -552,90 +548,16 @@
   </form>
 
   <script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, collection, serverTimestamp, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    // Firebase specific imports and logic are removed/commented out.
+    // let canUseFirebase = false; // This effectively disables any remaining Firebase-dependent logic if it were present.
 
-    // Firebase configuration (expected to be injected, e.g., by a backend)
-    const firebaseConfigString = typeof __firebase_config !== 'undefined' ? __firebase_config : '{}';
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id'; // Unique ID for this app/survey
-    
-    let firebaseConfig = {};
-    try {
-        firebaseConfig = JSON.parse(firebaseConfigString);
-        if (Object.keys(firebaseConfig).length === 0) {
-            console.warn("Firebase config is empty. Firestore saving will be simulated.");
-        }
-    } catch (e) {
-        console.error("Failed to parse Firebase config:", e);
-        console.warn("Firestore saving will be simulated.");
-    }
-
-    let app;
-    let auth;
-    let db;
-    let canUseFirebase = false;
-
-    if (Object.keys(firebaseConfig).length > 0 && firebaseConfig.apiKey) {
-        try {
-            app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-            // Set to 'warn' or 'error' for production
-            // setLogLevel('debug'); 
-            canUseFirebase = true;
-            console.log("Firebase initialized successfully.");
-        } catch (error) {
-            console.error("Error initializing Firebase:", error);
-            canUseFirebase = false;
-        }
-    } else {
-        console.warn("Firebase configuration is missing or invalid. Firebase features will be disabled.");
-    }
-    
-    let userId = null;
-    let isAuthReady = false;
-
-    if (canUseFirebase) {
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                userId = user.uid;
-                console.log("User is signed in with UID:", userId);
-            } else {
-                console.log("User is signed out, attempting to sign in...");
-                try {
-                    // Check for an injected custom auth token
-                    const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-                    if (initialAuthToken && initialAuthToken.trim() !== "") {
-                        await signInWithCustomToken(auth, initialAuthToken);
-                        console.log("Signed in with custom token.");
-                    } else {
-                        await signInAnonymously(auth);
-                        console.log("Signed in anonymously.");
-                    }
-                } catch (error) {
-                    console.error("Error during sign-in:", error);
-                    userId = `anonymous_fallback_${crypto.randomUUID()}`; 
-                    updateResultsWithMessage(`Authentication error: ${error.message}. Data might not be saved correctly. User ID: ${userId}`, 'text-red-500');
-                }
-            }
-            isAuthReady = true;
-        });
-    } else {
-        // Fallback for local preview without Firebase
-        userId = `local_preview_${crypto.randomUUID()}`;
-        isAuthReady = true;
-        console.log("Running in local/preview mode without Firebase. UserID:", userId);
-    }
-
+    // This function can be kept as it's generic, though not strictly used by the Sheets submission success message.
     function updateResultsWithMessage(message, className = 'text-gray-700') {
         const resultsDiv = document.getElementById('surveyResults');
         if (resultsDiv) {
             const p = document.createElement('p');
             p.className = className;
             p.textContent = message;
-            // Prepend or append based on desired order
             const existingSavingMsg = resultsDiv.querySelector('.saving-message');
             if (existingSavingMsg) {
                 resultsDiv.insertBefore(p, existingSavingMsg);
@@ -644,68 +566,6 @@
             }
         }
     }
-    
-    window.saveSurveyToFirestore = async (surveyData) => {
-        const resultsDiv = document.getElementById('surveyResults');
-        const submitButton = document.getElementById('submitButton');
-
-        if (!canUseFirebase) {
-            console.warn("Firebase is not initialized. Simulating save.");
-            updateResultsWithMessage("ملاحظة: يتم تشغيل الاستطلاع في وضع المعاينة. لن يتم حفظ البيانات بشكل دائم. / Note: Survey is in preview mode. Data will not be saved permanently.", 'font-semibold text-orange-600');
-            if (submitButton) {
-                submitButton.disabled = true;
-                submitButton.textContent = 'تم الإرسال (محاكاة) / Submitted (Simulated)';
-                submitButton.classList.remove('bg-green-600', 'hover:bg-green-700');
-                submitButton.classList.add('bg-gray-400', 'cursor-not-allowed');
-            }
-            return;
-        }
-
-        if (!isAuthReady) {
-            console.warn("Authentication is not ready yet. Retrying...");
-            updateResultsWithMessage("المصادقة معلقة ... حاول مرة أخرى بعد لحظات. / Authentication pending... Retrying in a moment.", 'text-yellow-500');
-            setTimeout(() => window.saveSurveyToFirestore(surveyData), 2000); // Retry after 2 seconds
-            return;
-        }
-
-        if (!userId) {
-            console.error("User ID is not available. Cannot save data.");
-            updateResultsWithMessage("خطأ: فشل مصادقة المستخدم. لا يمكن حفظ الاستطلاع. / Error: User authentication failed. Cannot save survey.", 'text-red-500');
-            if (submitButton) submitButton.disabled = false; // Re-enable button if auth fails critically
-            return;
-        }
-
-        const userSurveyCollectionPath = `artifacts/${appId}/users/${userId}/geriatricSurveyResponses`;
-        const surveyDocRef = doc(collection(db, userSurveyCollectionPath)); // Auto-generates ID
-
-        try {
-            await setDoc(surveyDocRef, {
-                ...surveyData,
-                submittedAt: serverTimestamp(),
-                clientTimestamp: new Date().toISOString(),
-                userId: userId, // Store authenticated user ID
-                appId: appId    // Store app/survey ID for context
-            });
-            console.log("Survey data saved with ID: ", surveyDocRef.id);
-            
-            const savingMsgElement = resultsDiv.querySelector('.saving-message');
-            if(savingMsgElement) savingMsgElement.textContent = 'تم حفظ بياناتك بنجاح! / Your data has been saved successfully!';
-            else updateResultsWithMessage('تم حفظ بياناتك بنجاح! / Your data has been saved successfully!', 'text-green-500 font-semibold');
-
-            if (submitButton) {
-                submitButton.disabled = true;
-                submitButton.textContent = 'تم الإرسال / Submitted';
-                submitButton.classList.remove('bg-green-600', 'hover:bg-green-700');
-                submitButton.classList.add('bg-gray-400', 'cursor-not-allowed');
-            }
-        } catch (error) {
-            console.error("Error saving survey data to Firestore: ", error);
-            const savingMsgElement = resultsDiv.querySelector('.saving-message');
-            if(savingMsgElement) savingMsgElement.textContent = `حدث خطأ أثناء حفظ البيانات: ${error.message} / Error saving your data: ${error.message}`;
-            else updateResultsWithMessage(`خطأ في حفظ الاستطلاع: ${error.message} / Error saving survey: ${error.message}`, 'text-red-500 font-semibold');
-            if (submitButton) submitButton.disabled = false; // Re-enable to allow retry if desired
-        }
-    };
   </script>
 
   <script>
@@ -729,24 +589,17 @@
     function validateCurrentSection() {
         const currentSectionElement = sections[currentSection - 1];
         let allValid = true;
-        
-        // Remove existing custom error messages from the current section
         currentSectionElement.querySelectorAll('.input-error-message, .radio-error-message').forEach(el => el.remove());
-
-        // Validate select, text, number inputs
         const inputs = currentSectionElement.querySelectorAll('input[required]:not([type="radio"]):not([type="checkbox"]), select[required], input[type="number"][required]');
         inputs.forEach(input => {
             if (!input.checkValidity()) {
                 allValid = false;
-                // input.reportValidity(); // Browser native validation bubble (optional, can be intrusive)
                 const errorMsg = document.createElement('div');
-                errorMsg.className = 'input-error-message'; // Defined in <style>
-                errorMsg.textContent = input.validationMessage || 'This field is required.'; // Use native or generic message
-                input.parentNode.insertBefore(errorMsg, input.nextSibling); // Insert after the input
+                errorMsg.className = 'input-error-message'; 
+                errorMsg.textContent = input.validationMessage || 'This field is required.';
+                input.parentNode.insertBefore(errorMsg, input.nextSibling);
             }
         });
-
-        // Validate radio button groups
         const radioGroupNames = [...new Set(Array.from(currentSectionElement.querySelectorAll('input[type="radio"][required]')).map(radio => radio.name))];
         radioGroupNames.forEach(groupName => {
             const groupRadios = currentSectionElement.querySelectorAll(`input[name="${groupName}"][required]`);
@@ -755,12 +608,10 @@
                 const firstRadioInGroup = groupRadios[0];
                 if (firstRadioInGroup) {
                     const errorMsgElement = document.createElement('div');
-                    errorMsgElement.className = 'radio-error-message'; // Defined in <style>
+                    errorMsgElement.className = 'radio-error-message'; 
                     errorMsgElement.textContent = 'الرجاء اختيار إجابة. / Please select an option.';
-                    
                     let gdsOptionsContainer = firstRadioInGroup.closest('div.flex.space-x-4.space-x-reverse');
                     let mspssOptionsContainer = firstRadioInGroup.closest('div.likert-options-ltr');
-
                     if (mspssOptionsContainer) {
                         mspssOptionsContainer.insertAdjacentElement('afterend', errorMsgElement);
                     } else if (gdsOptionsContainer) {
@@ -773,10 +624,6 @@
                             firstRadioInGroup.parentElement.insertAdjacentElement('afterend', errorMsgElement);
                         }
                     }
-                     // Optionally trigger native browser validation UI for the radio group
-                     // if (firstRadioInGroup.form && firstRadioInGroup.form.querySelector(`input[name="${groupName}"]:invalid`)) {
-                     //    firstRadioInGroup.reportValidity();
-                     // }
                 }
             }
         });
@@ -802,11 +649,10 @@
         if (totalSections > 0) {
             showSection(currentSection);
         }
-        // Dynamically generate Likert scale radio buttons for MSPSS
         document.querySelectorAll('.likert-options-ltr').forEach(container => {
             const name = container.dataset.radioGroupName;
             if (!name) {
-                console.warn("Could not find data-radio-group-name for Likert scale in:", container.closest('.question'));
+                // console.warn("Could not find data-radio-group-name for Likert scale in:", container.closest('.question'));
                 return;
             }
             let optionsHTML = '';
@@ -823,13 +669,12 @@
 
     document.getElementById("surveyForm").addEventListener("submit", function(e) {
       e.preventDefault();
-      if (!validateCurrentSection()) { // Validate the final section before submission
-          console.log("Final section validation failed.");
-          // Ensure error messages are visible if validation fails on submit button click
+      if (!validateCurrentSection()) { 
+          // console.log("Final section validation failed.");
           const finalSectionElement = sections[currentSection - 1];
           const firstInvalidElement = finalSectionElement.querySelector(':invalid');
           if (firstInvalidElement) {
-              firstInvalidElement.focus(); // Focus on the first invalid element
+              firstInvalidElement.focus(); 
           }
           return;
       }
@@ -837,16 +682,17 @@
       const form = e.target;
       const data = new FormData(form);
       const resultsDiv = document.getElementById('surveyResults');
-      resultsDiv.innerHTML = `<p class="text-gray-700 saving-message">جاري حساب النتائج وحفظ البيانات... / Calculating scores and saving data...</p>`;
+      const submitButton = document.getElementById('submitButton');
+      
+      resultsDiv.innerHTML = `<p class="text-gray-700 saving-message">جاري حساب النتائج وإرسال البيانات... / Calculating scores and sending data...</p>`;
+      submitButton.disabled = true;
 
-      // Calculate MMSE Score
       let mmseScore = 0;
       const mmseCheckboxes = form.querySelectorAll('input[name="mmse"]:checked');
       mmseCheckboxes.forEach(checkbox => {
         mmseScore += parseInt(checkbox.value);
       });
 
-      // Calculate ADL Score
       const adlFields = ["adl_hygiene", "adl_dressing", "adl_toilet", "adl_mobility", "adl_continence", "adl_feeding"];
       let adlScore = 0;
       adlFields.forEach(field => {
@@ -854,14 +700,12 @@
           if (val) adlScore += parseFloat(val);
       });
 
-      // Calculate GDS-15 Score
       let gdsScore = 0;
       for (let i = 1; i <= 15; i++) {
         const val = data.get(`gds${i}`);
         if (val) gdsScore += parseInt(val);
       }
 
-      // Calculate MSPSS Score
       let mspssScore = 0;
       for (let i = 1; i <= 12; i++) {
         const value = data.get(`mspss${i}`);
@@ -870,34 +714,24 @@
         }
       }
 
-      // Calculate UCL-6 Score (with reverse scoring for items 3 and 6)
       let uclScore = 0;
       const uclRawValues = {};
       for (let i = 1; i <= 6; i++) {
         const val = data.get(`ucl${i}`);
-        uclRawValues[`ucl${i}`] = val ? parseInt(val) : 0; // Store raw value
+        uclRawValues[`ucl${i}`] = val ? parseInt(val) : 0; 
       }
       uclScore += uclRawValues.ucl1;
       uclScore += uclRawValues.ucl2;
-      uclScore += (3 - uclRawValues.ucl3); // Reverse score
+      uclScore += (3 - uclRawValues.ucl3); 
       uclScore += uclRawValues.ucl4;
       uclScore += uclRawValues.ucl5;
-      uclScore += (3 - uclRawValues.ucl6); // Reverse score
+      uclScore += (3 - uclRawValues.ucl6); 
 
-      // Display scores (temporary, before Firebase message)
-      resultsDiv.innerHTML = `
-        <h3 class="text-lg font-semibold text-sky-600 mb-2">النتائج / Scores:</h3>
-        <p class="mb-1">MMSE Score: ${mmseScore} / 30</p>
-        <p class="mb-1">ADL Score: ${adlScore.toFixed(1)} / 6</p> <!-- .toFixed(1) for 0.5 values -->
-        <p class="mb-1">GDS-15 Score: ${gdsScore} / 15</p>
-        <p class="mb-1">MSPSS Score: ${mspssScore} / 84</p>
-        <p class="mb-3">UCL-6 Score: ${uclScore} / 18</p>
-        <p class="text-gray-700 font-semibold saving-message">يتم الآن حفظ بياناتك... / Saving your data...</p>
-      `;
-      
-      // Prepare data for Firebase
+      const patientIdentifier = data.get('patientId') || `Patient_${new Date().getTime()}`;
+
       const surveyDataToSave = {
           demographics: {
+              patientId: patientIdentifier,
               age: data.get('age'),
               gender: data.get('gender'),
               marital: data.get('marital'),
@@ -906,27 +740,63 @@
           scores: {
             mmse: mmseScore,
             adl: adlScore,
-            gds15: gdsScore,
+            gds15: gdsScore, 
             mspss: mspssScore,
-            ucl6: uclScore,
+            ucl6: uclScore,   
           },
-          answers: { // Store individual answers for detailed analysis
+          answers: { 
             adl: {}, gds15: {}, mspss: {}, 
-            ucl6_raw: uclRawValues, // Store raw UCL values
-            // MMSE: Store which items were checked
+            ucl6_raw: uclRawValues, 
             mmse_checked_ids: Array.from(mmseCheckboxes).map(cb => cb.id || `mmse_item_val_${cb.value}_idx_${Array.from(form.querySelectorAll('input[name="mmse"]')).indexOf(cb)}`)
           }
       };
       adlFields.forEach(field => surveyDataToSave.answers.adl[field.replace('adl_','')] = data.get(field));
       for (let i = 1; i <= 15; i++) surveyDataToSave.answers.gds15[`gds${i}`] = data.get(`gds${i}`);
       for (let i = 1; i <= 12; i++) surveyDataToSave.answers.mspss[`mspss${i}`] = data.get(`mspss${i}`);
+      
+      resultsDiv.innerHTML = `
+        <h3 class="text-lg font-semibold text-sky-600 mb-2">النتائج / Scores:</h3>
+        <p class="mb-1">Patient ID: ${patientIdentifier}</p>
+        <p class="mb-1">MMSE Score: ${mmseScore} / 30</p>
+        <p class="mb-1">ADL Score: ${adlScore.toFixed(1)} / 6</p>
+        <p class="mb-1">GDS-15 Score: ${gdsScore} / 15</p>
+        <p class="mb-1">MSPSS Score: ${mspssScore} / 84</p>
+        <p class="mb-3">UCL-6 Score: ${uclScore} / 18</p>
+        <p class="text-gray-700 font-semibold saving-message">يتم الآن إرسال بياناتك إلى جدول البيانات... / Sending your data to the spreadsheet...</p>
+      `;
 
-      if (window.saveSurveyToFirestore) {
-          window.saveSurveyToFirestore(surveyDataToSave);
-      } else {
-          console.error("Firebase save function not ready or Firebase not initialized.");
-          resultsDiv.innerHTML += `<p class="text-red-500 font-semibold mt-2">خطأ: تعذر الاتصال بقاعدة البيانات لحفظ البيانات. / Error: Could not connect to the database to save data.</p>`;
-      }
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxuPO2_DtKoRoM14lT1UhAf95LXGOFsvUQJ0MyJ7Sm7-K8ZTOsqCmAiifNsDDVsmZqHxg/exec";
+
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'cors', 
+        cache: 'no-cache',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        redirect: 'follow', 
+        body: JSON.stringify(surveyDataToSave) 
+      })
+      .then(response => response.json()) 
+      .then(data => {
+        // console.log('Success response from Apps Script:', data);
+        if (data.result === "success") {
+            resultsDiv.innerHTML += `<p class="text-green-500 font-semibold mt-2">تم إرسال البيانات بنجاح إلى جدول البيانات! / Data submitted successfully to spreadsheet!</p>`;
+            submitButton.textContent = 'تم الإرسال / Submitted';
+            submitButton.classList.remove('bg-green-600', 'hover:bg-green-700');
+            submitButton.classList.add('bg-gray-400', 'cursor-not-allowed');
+        } else {
+            resultsDiv.innerHTML += `<p class="text-red-500 font-semibold mt-2">خطأ في الإرسال إلى جدول البيانات: ${data.error || 'Unknown error'} / Error submitting to spreadsheet: ${data.error || 'Unknown error'}</p>`;
+            submitButton.disabled = false; 
+            submitButton.textContent = 'إرسال / Submit';
+        }
+      })
+      .catch((error) => {
+        // console.error('Error sending data to Apps Script:', error);
+        resultsDiv.innerHTML += `<p class="text-red-500 font-semibold mt-2">حدث خطأ في الشبكة أو الاتصال. حاول مرة أخرى. / Network or connection error occurred. Please try again.</p>`;
+        submitButton.disabled = false; 
+        submitButton.textContent = 'إرسال / Submit';
+      });
     });
   </script>
 </body>
