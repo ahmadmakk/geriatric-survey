@@ -418,7 +418,7 @@
                         <span>لا أوافق بشدة / Strongly Disagree</span>
                         <span>أوافق بشدة / Strongly Agree</span>
                     </div>
-                    <div data-radio-group-name="mspss3" class="likert-options-ltr flex justify-around items-start mt-1 mb-1 py.1">
+                    <div data-radio-group-name="mspss3" class="likert-options-ltr flex justify-around items-start mt-1 mb-1 py-1">
                         </div>
                 </div>
             </div>
@@ -528,7 +528,6 @@
         </div>
     </div>
 
-    <!-- MODIFICATION START: UCL-6 Section with updated helper text order -->
     <div class="section hidden mb-10 p-5 bg-white rounded-lg shadow-lg" id="section-6">
       <h2 class="text-2xl font-semibold text-sky-700 mb-4">UCL-6 – مقياس الشعور بالوحدة</h2>
       <p class="text-gray-600 mb-6">اختر من 0 (أبدًا) إلى 3 (غالبًا) / Choose from 0 (Never) to 3 (Often)</p>
@@ -611,7 +610,6 @@
         <button type="button" onclick="nextSection()" class="m-1 px-6 py-2.5 cursor-pointer bg-blue-600 text-white border-none rounded-md hover:bg-blue-700 transition-colors">التالي / Next</button>
       </div>
     </div>
-    <!-- MODIFICATION END: UCL-6 Section -->
 
 
     <div class="section hidden mb-10 p-5 bg-white rounded-lg shadow-lg" id="section-final">
@@ -736,16 +734,15 @@
             const startValue = parseInt(container.dataset.likertStart) || 1;
 
             let optionsHTML = '';
-            // Check if this is a UCL-6 scale to reverse the display order
             const isUCLScale = (name.startsWith('ucl') && points === 4 && startValue === 0);
 
             if (isUCLScale) {
                 // Generate in descending visual order (3, 2, 1, 0)
                 for (let i = points - 1; i >= 0; i--) { // Loop from 3 (points-1) down to 0
-                    const displayValue = startValue + i; // This will be 3, then 2, then 1, then 0
+                    const displayValue = startValue + i;
                     optionsHTML += `
-                        <label class="block text-center cursor-pointer flex-1 px-0.5 min-w-[2rem]">
-                            <span class="text-sm">${displayValue}</span>
+                        <label class="block text-center cursor-pointer flex-1 px-0.5 min-w-[2rem] pt-1 pb-1"> <!-- Added padding top/bottom -->
+                            <!-- <span class="text-sm">${displayValue}</span> --> <!-- Number span removed -->
                             <input type="radio" name="${name}" value="${displayValue}" required class="block mx-auto mt-1 h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 focus:ring-offset-1">
                         </label>`;
                 }
@@ -754,8 +751,8 @@
                 for (let i = 0; i < points; i++) {
                     const currentValue = startValue + i;
                     optionsHTML += `
-                        <label class="block text-center cursor-pointer flex-1 px-0.5 min-w-[2rem]">
-                            <span class="text-sm">${currentValue}</span>
+                        <label class="block text-center cursor-pointer flex-1 px-0.5 min-w-[2rem] pt-1 pb-1"> <!-- Added padding top/bottom -->
+                            <!-- <span class="text-sm">${currentValue}</span> --> <!-- Number span removed -->
                             <input type="radio" name="${name}" value="${currentValue}" required class="block mx-auto mt-1 h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 focus:ring-offset-1">
                         </label>`;
                 }
