@@ -67,7 +67,6 @@
     <div class="section hidden mb-10 p-5 bg-white rounded-lg shadow-lg" id="section-1">
       <h2 class="text-2xl font-semibold text-sky-700 mb-6">معلومات عامة / General Information</h2>
 
-      <!-- MODIFICATION START: Added introductory text -->
       <div class="intro-text text-gray-700 mb-8">
         <p dir="ltr">
           Dear Participant,
@@ -92,7 +91,6 @@
           نقدّر مشاركتكم و نشكر دعمكم.
         </p>
       </div>
-      <!-- MODIFICATION END: Added introductory text -->
 
       <label for="patientId" class="block text-gray-700 mb-1">معرف المريض / Patient Identifier:</label>
       <input type="text" id="patientId" name="patientId" required class="block w-full sm:w-auto p-2.5 mt-1 rounded-md border border-gray-300 min-w-[150px] max-w-[400px] focus:border-blue-500 focus:ring-blue-500" placeholder="Enter Patient ID">
@@ -420,7 +418,7 @@
                         <span>لا أوافق بشدة / Strongly Disagree</span>
                         <span>أوافق بشدة / Strongly Agree</span>
                     </div>
-                    <div data-radio-group-name="mspss3" class="likert-options-ltr flex justify-around items-start mt-1 mb-1 py-1">
+                    <div data-radio-group-name="mspss3" class="likert-options-ltr flex justify-around items-start mt-1 mb-1 py.1">
                         </div>
                 </div>
             </div>
@@ -530,6 +528,7 @@
         </div>
     </div>
 
+    <!-- MODIFICATION START: UCL-6 Section with updated helper text order -->
     <div class="section hidden mb-10 p-5 bg-white rounded-lg shadow-lg" id="section-6">
       <h2 class="text-2xl font-semibold text-sky-700 mb-4">UCL-6 – مقياس الشعور بالوحدة</h2>
       <p class="text-gray-600 mb-6">اختر من 0 (أبدًا) إلى 3 (غالبًا) / Choose from 0 (Never) to 3 (Often)</p>
@@ -538,8 +537,8 @@
             <p class="mb-2 text-gray-800">1. كم مرة تشعر بأنك تفتقر إلى الصحبة؟ / How often do you feel that you lack companionship?</p>
             <div class="likert-scale-container mt-1 mb-5">
                 <div class="flex justify-between text-xs text-gray-500 mb-1 px-1">
-                    <span>أبدًا / Never (0)</span>
                     <span>غالبًا / Often (3)</span>
+                    <span>أبدًا / Never (0)</span>
                 </div>
                 <div data-radio-group-name="ucl1" data-likert-points="4" data-likert-start="0" class="likert-options-ltr flex justify-around items-start mt-1 mb-1 py-1">
                     <!-- JS will populate this -->
@@ -550,8 +549,8 @@
             <p class="mb-2 text-gray-800">2. كم مرة تشعر بأنك تُركت خارج الأمور (مستبعد)؟ / How often do you feel left out?</p>
             <div class="likert-scale-container mt-1 mb-5">
                 <div class="flex justify-between text-xs text-gray-500 mb-1 px-1">
-                    <span>أبدًا / Never (0)</span>
                     <span>غالبًا / Often (3)</span>
+                    <span>أبدًا / Never (0)</span>
                 </div>
                 <div data-radio-group-name="ucl2" data-likert-points="4" data-likert-start="0" class="likert-options-ltr flex justify-around items-start mt-1 mb-1 py-1">
                     <!-- JS will populate this -->
@@ -562,8 +561,8 @@
             <p class="mb-2 text-gray-800">3. كم مرة تشعر بأنك قريب من الآخرين؟ (عكسي) / How often do you feel close to other people? (Reverse Scored)</p>
             <div class="likert-scale-container mt-1 mb-5">
                 <div class="flex justify-between text-xs text-gray-500 mb-1 px-1">
-                    <span>أبدًا / Never (0)</span>
                     <span>غالبًا / Often (3)</span>
+                    <span>أبدًا / Never (0)</span>
                 </div>
                 <div data-radio-group-name="ucl3" data-likert-points="4" data-likert-start="0" class="likert-options-ltr flex justify-around items-start mt-1 mb-1 py-1">
                     <!-- JS will populate this -->
@@ -574,8 +573,8 @@
             <p class="mb-2 text-gray-800">4. كم مرة تشعر بأنك تعاني من الوحدة؟ / How often do you feel lonely?</p>
             <div class="likert-scale-container mt-1 mb-5">
                 <div class="flex justify-between text-xs text-gray-500 mb-1 px-1">
-                    <span>أبدًا / Never (0)</span>
                     <span>غالبًا / Often (3)</span>
+                    <span>أبدًا / Never (0)</span>
                 </div>
                 <div data-radio-group-name="ucl4" data-likert-points="4" data-likert-start="0" class="likert-options-ltr flex justify-around items-start mt-1 mb-1 py-1">
                     <!-- JS will populate this -->
@@ -586,8 +585,8 @@
             <p class="mb-2 text-gray-800">5. كم مرة تشعر بأنك مهمل أو متروك؟ / How often do you feel neglected or left alone?</p>
             <div class="likert-scale-container mt-1 mb-5">
                 <div class="flex justify-between text-xs text-gray-500 mb-1 px-1">
-                    <span>أبدًا / Never (0)</span>
                     <span>غالبًا / Often (3)</span>
+                    <span>أبدًا / Never (0)</span>
                 </div>
                 <div data-radio-group-name="ucl5" data-likert-points="4" data-likert-start="0" class="likert-options-ltr flex justify-around items-start mt-1 mb-1 py-1">
                     <!-- JS will populate this -->
@@ -598,8 +597,8 @@
             <p class="mb-2 text-gray-800">6. كم مرة تشعر بأن الناس معك (يدعمونك)؟ (عكسي) / How often do you feel that people are there for you? (Reverse Scored)</p>
             <div class="likert-scale-container mt-1 mb-5">
                 <div class="flex justify-between text-xs text-gray-500 mb-1 px-1">
-                    <span>أبدًا / Never (0)</span>
                     <span>غالبًا / Often (3)</span>
+                    <span>أبدًا / Never (0)</span>
                 </div>
                 <div data-radio-group-name="ucl6" data-likert-points="4" data-likert-start="0" class="likert-options-ltr flex justify-around items-start mt-1 mb-1 py-1">
                     <!-- JS will populate this -->
@@ -612,6 +611,7 @@
         <button type="button" onclick="nextSection()" class="m-1 px-6 py-2.5 cursor-pointer bg-blue-600 text-white border-none rounded-md hover:bg-blue-700 transition-colors">التالي / Next</button>
       </div>
     </div>
+    <!-- MODIFICATION END: UCL-6 Section -->
 
 
     <div class="section hidden mb-10 p-5 bg-white rounded-lg shadow-lg" id="section-final">
@@ -736,13 +736,29 @@
             const startValue = parseInt(container.dataset.likertStart) || 1;
 
             let optionsHTML = '';
-            for (let i = 0; i < points; i++) {
-                const currentValue = startValue + i;
-                optionsHTML += `
-                    <label class="block text-center cursor-pointer flex-1 px-0.5 min-w-[2rem]">
-                        <span class="text-sm">${currentValue}</span>
-                        <input type="radio" name="${name}" value="${currentValue}" required class="block mx-auto mt-1 h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 focus:ring-offset-1">
-                    </label>`;
+            // Check if this is a UCL-6 scale to reverse the display order
+            const isUCLScale = (name.startsWith('ucl') && points === 4 && startValue === 0);
+
+            if (isUCLScale) {
+                // Generate in descending visual order (3, 2, 1, 0)
+                for (let i = points - 1; i >= 0; i--) { // Loop from 3 (points-1) down to 0
+                    const displayValue = startValue + i; // This will be 3, then 2, then 1, then 0
+                    optionsHTML += `
+                        <label class="block text-center cursor-pointer flex-1 px-0.5 min-w-[2rem]">
+                            <span class="text-sm">${displayValue}</span>
+                            <input type="radio" name="${name}" value="${displayValue}" required class="block mx-auto mt-1 h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 focus:ring-offset-1">
+                        </label>`;
+                }
+            } else {
+                // Original ascending order for other scales (like MSPSS)
+                for (let i = 0; i < points; i++) {
+                    const currentValue = startValue + i;
+                    optionsHTML += `
+                        <label class="block text-center cursor-pointer flex-1 px-0.5 min-w-[2rem]">
+                            <span class="text-sm">${currentValue}</span>
+                            <input type="radio" name="${name}" value="${currentValue}" required class="block mx-auto mt-1 h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 focus:ring-offset-1">
+                        </label>`;
+                }
             }
             container.innerHTML = optionsHTML;
         });
