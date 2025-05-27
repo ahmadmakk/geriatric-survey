@@ -55,6 +55,10 @@
              margin-left: auto;
         }
     }
+    .intro-text p {
+        margin-bottom: 1rem; /* space between paragraphs */
+        line-height: 1.6;
+    }
   </style>
 </head>
 <body class="bg-gray-100 p-4 sm:p-6 md:p-8 font-sans">
@@ -62,6 +66,33 @@
 
     <div class="section hidden mb-10 p-5 bg-white rounded-lg shadow-lg" id="section-1">
       <h2 class="text-2xl font-semibold text-sky-700 mb-6">معلومات عامة / General Information</h2>
+
+      <!-- MODIFICATION START: Added introductory text -->
+      <div class="intro-text text-gray-700 mb-8">
+        <p dir="ltr">
+          Dear Participant,
+        </p>
+        <p dir="ltr">
+          The purpose of this questionnaire is to help researchers better understand the factors contributing to cognitive health and social engagement among nursing home residents.
+        </p>
+        <p dir="ltr">
+          Your participation in this survey is entirely voluntary. The information you provide will remain anonymous and confidential. The questionnaire will take approximately 15–20 minutes to complete. You may stop the interview at any time.
+        </p>
+        <p dir="ltr">
+          Your input is highly valuable and appreciated.
+          Thank you for your time and support.
+        </p>
+        <hr class="my-6 border-gray-300">
+        <p>
+          عزيزي/عزيزتي المشارك(ة)،
+        </p>
+        <p>
+          يهدف هذا الاستبيان إلى مساعدة الباحثين على فهم أفضل للعوامل التي تؤثر على الوظيفة الادراكيّة والتفاعل الاجتماعي لدى كبار السن المقيمين في دور الرعاية.
+          مشاركتكم في هذا الاستبيان اختيارية تمامًا، وجميع المعلومات سرية و ستستخدم لاهداف اكاديميّة فقط . يستغرق تعبئة الاستبيان حوالي 15 إلى 20 دقيقة، ويمكنك التوقف عن المشاركة في أي وقت تشاء.
+          نقدّر مشاركتكم و نشكر دعمكم.
+        </p>
+      </div>
+      <!-- MODIFICATION END: Added introductory text -->
 
       <label for="patientId" class="block text-gray-700 mb-1">معرف المريض / Patient Identifier:</label>
       <input type="text" id="patientId" name="patientId" required class="block w-full sm:w-auto p-2.5 mt-1 rounded-md border border-gray-300 min-w-[150px] max-w-[400px] focus:border-blue-500 focus:ring-blue-500" placeholder="Enter Patient ID">
@@ -166,9 +197,7 @@
 
         <div class="question mt-2">
             <p class="mb-1"><span class="font-bold me-2">30.</span> انسخ هذا الرسم / Copy this drawing:</p>
-            <!-- MODIFICATION START: Replaced inline SVG with img tag -->
             <img src="mmse_drawing.svg" alt="MMSE Drawing Task - Intersecting Pentagons" class="mmse-drawing">
-            <!-- MODIFICATION END -->
             <div class="flex items-center justify-end mt-1"> <input type="checkbox" name="mmse" value="1" id="mmse_draw" class="me-2 h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="mmse_draw" class="cursor-pointer">تم النسخ بشكل صحيح / Copied correctly</label></div>
         </div>
 
@@ -501,11 +530,10 @@
         </div>
     </div>
 
-    <!-- MODIFICATION START: UCL-6 Section changed to use radio buttons -->
     <div class="section hidden mb-10 p-5 bg-white rounded-lg shadow-lg" id="section-6">
       <h2 class="text-2xl font-semibold text-sky-700 mb-4">UCL-6 – مقياس الشعور بالوحدة</h2>
       <p class="text-gray-600 mb-6">اختر من 0 (أبدًا) إلى 3 (غالبًا) / Choose from 0 (Never) to 3 (Often)</p>
-      <div class="space-y-6"> <!-- Increased space-y for better separation with new layout -->
+      <div class="space-y-6">
         <div class="question">
             <p class="mb-2 text-gray-800">1. كم مرة تشعر بأنك تفتقر إلى الصحبة؟ / How often do you feel that you lack companionship?</p>
             <div class="likert-scale-container mt-1 mb-5">
@@ -584,7 +612,6 @@
         <button type="button" onclick="nextSection()" class="m-1 px-6 py-2.5 cursor-pointer bg-blue-600 text-white border-none rounded-md hover:bg-blue-700 transition-colors">التالي / Next</button>
       </div>
     </div>
-    <!-- MODIFICATION END: UCL-6 Section -->
 
 
     <div class="section hidden mb-10 p-5 bg-white rounded-lg shadow-lg" id="section-final">
@@ -641,8 +668,6 @@
         const currentSectionElement = sections[currentSection - 1];
         let allValid = true;
         currentSectionElement.querySelectorAll('.input-error-message, .radio-error-message').forEach(el => el.remove());
-        // MODIFICATION: Removed input[type="number"][required] from this query as UCL-6 no longer uses it.
-        // Radio buttons for UCL-6 will be validated by the radio group logic below.
         const inputs = currentSectionElement.querySelectorAll('input[required]:not([type="radio"]):not([type="checkbox"]), select[required]');
         inputs.forEach(input => {
             if (!input.checkValidity()) {
@@ -664,8 +689,8 @@
                     errorMsgElement.className = 'radio-error-message';
                     errorMsgElement.textContent = 'الرجاء اختيار إجابة. / Please select an option.';
                     let gdsOptionsContainer = firstRadioInGroup.closest('div.flex.space-x-4.space-x-reverse');
-                    let likertOptionsContainer = firstRadioInGroup.closest('div.likert-options-ltr'); // Covers both MSPSS and UCL
-                    if (likertOptionsContainer) { // Check this first as it's more specific
+                    let likertOptionsContainer = firstRadioInGroup.closest('div.likert-options-ltr');
+                    if (likertOptionsContainer) {
                         likertOptionsContainer.insertAdjacentElement('afterend', errorMsgElement);
                     } else if (gdsOptionsContainer) {
                         gdsOptionsContainer.insertAdjacentElement('afterend', errorMsgElement);
@@ -702,16 +727,13 @@
         if (totalSections > 0) {
             showSection(currentSection);
         }
-        // MODIFICATION START: Updated Likert scale generation
         document.querySelectorAll('.likert-options-ltr').forEach(container => {
             const name = container.dataset.radioGroupName;
             if (!name) {
-                // console.warn("Could not find data-radio-group-name for Likert scale in:", container.closest('.question'));
                 return;
             }
-            // Read custom points and start value, or use defaults
-            const points = parseInt(container.dataset.likertPoints) || 7; // Default 7 for MSPSS
-            const startValue = parseInt(container.dataset.likertStart) || 1; // Default 1 for MSPSS
+            const points = parseInt(container.dataset.likertPoints) || 7;
+            const startValue = parseInt(container.dataset.likertStart) || 1;
 
             let optionsHTML = '';
             for (let i = 0; i < points; i++) {
@@ -724,18 +746,14 @@
             }
             container.innerHTML = optionsHTML;
         });
-        // MODIFICATION END
     });
 
     document.getElementById("surveyForm").addEventListener("submit", function(e) {
       e.preventDefault();
       if (!validateCurrentSection()) {
-          // console.log("Final section validation failed.");
           const finalSectionElement = sections[currentSection - 1];
-          // Try to find the first invalid element, which could be a radio button container now
           let firstInvalidElement = finalSectionElement.querySelector(':invalid, .radio-error-message');
           if (firstInvalidElement && firstInvalidElement.classList.contains('radio-error-message')) {
-              // If it's the error message, try to focus the related radio group
               const radioGroupName = firstInvalidElement.previousElementSibling?.dataset?.radioGroupName || firstInvalidElement.closest('.question')?.querySelector('input[type="radio"]')?.name;
               if (radioGroupName) {
                   const firstRadio = finalSectionElement.querySelector(`input[name="${radioGroupName}"]`);
@@ -782,12 +800,11 @@
         }
       }
 
-      // UCL-6 Score Calculation - unchanged as data.get() will now fetch radio values
       let uclScore = 0;
       const uclRawValues = {};
       for (let i = 1; i <= 6; i++) {
-        const val = data.get(`ucl${i}`); // This will get the selected radio value string
-        uclRawValues[`ucl${i}`] = val ? parseInt(val) : 0; // parseInt will convert "0", "1", "2", "3"
+        const val = data.get(`ucl${i}`);
+        uclRawValues[`ucl${i}`] = val ? parseInt(val) : 0;
       }
       uclScore += uclRawValues.ucl1;
       uclScore += uclRawValues.ucl2;
@@ -815,14 +832,13 @@
           },
           answers: {
             adl: {}, gds15: {}, mspss: {},
-            ucl6_raw: {}, // Will store raw selections for ucl
+            ucl6_raw: {},
             mmse_checked_ids: Array.from(mmseCheckboxes).map(cb => cb.id || `mmse_item_val_${cb.value}_idx_${Array.from(form.querySelectorAll('input[name="mmse"]')).indexOf(cb)}`)
           }
       };
       adlFields.forEach(field => surveyDataToSave.answers.adl[field.replace('adl_','')] = data.get(field));
       for (let i = 1; i <= 15; i++) surveyDataToSave.answers.gds15[`gds${i}`] = data.get(`gds${i}`);
       for (let i = 1; i <= 12; i++) surveyDataToSave.answers.mspss[`mspss${i}`] = data.get(`mspss${i}`);
-      // Store raw UCL-6 answers (which are now string numbers from radio buttons)
       for (let i = 1; i <= 6; i++) surveyDataToSave.answers.ucl6_raw[`ucl${i}`] = data.get(`ucl${i}`);
 
 
@@ -851,7 +867,6 @@
       })
       .then(response => response.json())
       .then(data => {
-        // console.log('Success response from Apps Script:', data);
         if (data.result === "success") {
             resultsDiv.innerHTML += `<p class="text-green-500 font-semibold mt-2">تم إرسال البيانات بنجاح إلى جدول البيانات! / Data submitted successfully to spreadsheet!</p>`;
             submitButton.textContent = 'تم الإرسال / Submitted';
@@ -864,7 +879,6 @@
         }
       })
       .catch((error) => {
-        // console.error('Error sending data to Apps Script:', error);
         resultsDiv.innerHTML += `<p class="text-red-500 font-semibold mt-2">حدث خطأ في الشبكة أو الاتصال. حاول مرة أخرى. / Network or connection error occurred. Please try again.</p>`;
         submitButton.disabled = false;
         submitButton.textContent = 'إرسال / Submit';
